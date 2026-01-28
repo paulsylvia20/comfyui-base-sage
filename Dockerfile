@@ -21,10 +21,12 @@ RUN apt-get update && \
     python3.12-venv \
     python3.12-dev \
     build-essential \
+    ninja-build \
     && wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb \
     && dpkg -i cuda-keyring_1.1-1_all.deb \
     && apt-get update \
     && apt-get install -y --no-install-recommends cuda-minimal-build-12-4 \
+    cuda-cusparse-dev-12-4
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/* \
     && rm cuda-keyring_1.1-1_all.deb
@@ -52,6 +54,11 @@ RUN git clone https://github.com/ltdrdata/ComfyUI-Manager.git && \
 # Install PyTorch and all ComfyUI dependencies
 RUN python3.12 -m pip install --no-cache-dir \
     torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu124
+
+# Force SageAttention to compile during build
+ENV SAGEATTENTION_FORCE_BUILD=1
+
+RUN python3.12 -m pip install --no-cache-dir sageattention
 
 WORKDIR /tmp/build/ComfyUI
 RUN python3.12 -m pip install --no-cache-dir -r requirements.txt && \
@@ -155,3 +162,4 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
     update-alternatives --set python3 /usr/bin/python3.12
 
 ENTRYPOINT ["/start.sh"]
+
