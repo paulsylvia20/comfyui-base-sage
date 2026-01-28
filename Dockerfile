@@ -25,7 +25,7 @@ RUN apt-get update && \
     && wget https://developer.download.nvidia.com/compute/cuda/repos/ubuntu2204/x86_64/cuda-keyring_1.1-1_all.deb \
     && dpkg -i cuda-keyring_1.1-1_all.deb \
     && apt-get update \
-    apt-get install -y --no-install-recommends \
+    && apt-get install -y --no-install-recommends \
         cuda-minimal-build-12-4 \
         cuda-cusparse-dev-12-4 \
         && apt-get clean \
@@ -163,5 +163,6 @@ RUN update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.12 1
     update-alternatives --set python3 /usr/bin/python3.12
 
 ENTRYPOINT ["/start.sh"]
+
 
 
